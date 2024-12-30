@@ -1,5 +1,7 @@
 #include "MsgCtrl.h"
 
+struct Message Messages[NumberOfMessages];
+
 struct Message Test_ = {
 		.Direction = Downlink,
 		.Length = 4,
@@ -32,7 +34,7 @@ void Setup_MsgCtrl(void){
 }
 
 void SendMessage(uint8_t _Message){
-
+	MessageName = _Message;
 	CyclesRemaining = 0;
 	DriverIndefinite = false;
 

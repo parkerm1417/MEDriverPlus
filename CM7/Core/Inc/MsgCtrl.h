@@ -3,6 +3,7 @@
 
 #include "TimingCtrl.h"
 #include "stdint.h"
+#include "BitCtrl.h"
 
 enum MessageList{
 	TestMessage,
@@ -21,10 +22,7 @@ struct Message{
 	uint32_t Cycles[64];
 };
 
-struct Message Messages[NumberOfMessages];
-
-//extern struct Message;
-//extern struct Message Messages[NumberOfMessages];
+extern struct Message Messages[NumberOfMessages];
 
 void Setup_MsgCtrl(void);
 

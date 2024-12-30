@@ -3,10 +3,9 @@
 
 #include "stdint.h"
 #include "stdbool.h"
-//#include "main.h"
 #include "tim.h"
 #include "adc.h"
-//#include "MsgCtrl.h"
+#include "MsgCtrl.h"
 
 enum DriverStates{
 	DriverOn,
@@ -23,6 +22,5 @@ void Setup_BitCtrl(void);
 void DriverStart(int32_t _Cycles);
 
 void DriverStop(int32_t _Cycles);
-
 
 #endif /* INC_BITCTRL_H_ */
