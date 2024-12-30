@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    tim.h
+  * @file    dac.h
   * @brief   This file contains all the function prototypes for
-  *          the tim.c file
+  *          the dac.c file
   ******************************************************************************
   * @attention
   *
@@ -18,8 +18,8 @@
   */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TIM_H__
-#define __TIM_H__
+#ifndef __DAC_H__
+#define __DAC_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,25 +29,23 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-#include "stdbool.h"
-#include "TimingCtrl.h"
+
 /* USER CODE END Includes */
 
-extern TIM_HandleTypeDef htim1;
+extern DAC_HandleTypeDef hdac1;
 
 /* USER CODE BEGIN Private defines */
-extern bool pwmState;
+
 /* USER CODE END Private defines */
 
-void MX_TIM1_Init(void);
-
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+void MX_DAC1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void DAC_Start(uint16_t _Value);
 
-void PWM_Start(void);
+void DAC_Stop(void);
 
-void PWM_Stop(void);
+void DAC_SetVoltage(uint16_t _Value);
 
 /* USER CODE END Prototypes */
 
@@ -55,5 +53,5 @@ void PWM_Stop(void);
 }
 #endif
 
-#endif /* __TIM_H__ */
+#endif /* __DAC_H__ */
 

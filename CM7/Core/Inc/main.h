@@ -38,7 +38,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern __IO uint32_t BspButtonState;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

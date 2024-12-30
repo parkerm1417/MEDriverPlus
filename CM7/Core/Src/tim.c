@@ -97,6 +97,8 @@ void MX_TIM1_Init(void)
   }
   /* USER CODE BEGIN TIM1_Init 2 */
   __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_UPDATE);
+  __HAL_TIM_SET_AUTORELOAD(&htim1, HAL_RCC_GetPCLK2Freq()/DRIVER_FREQ);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, htim1.Init.Period/2);
   /* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
 
@@ -186,11 +188,4 @@ void PWM_Stop(void){
 	pwmState = false;
 }
 
-void Timer_Start(void){
-	//HAL_TIM_Base_Start_IT(&htim8);
-}
-
-void Timer_Stop(void){
-	//HAL_TIM_Base_Stop_IT(&htim8);
-}
 /* USER CODE END 1 */

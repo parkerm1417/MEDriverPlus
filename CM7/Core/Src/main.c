@@ -19,13 +19,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dac.h"
 #include "dma.h"
 #include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+//#include "MEDriverPlusMain.h"
+#include "BitCtrl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,7 +55,7 @@ COM_InitTypeDef BspCOMInit;
 __IO uint32_t BspButtonState = BUTTON_RELEASED;
 
 /* USER CODE BEGIN PV */
-uint8_t Counter = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -129,11 +131,14 @@ Error_Handler();
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM1_Init();
+  MX_DAC1_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-
+  //Setup();
+  PWM_Start();
+  DriverStop(-1);
   /* USER CODE END 2 */
 
   /* Initialize leds */
@@ -157,44 +162,29 @@ Error_Handler();
 
   /* USER CODE BEGIN BSP */
   /* -- Sample board code to send message over COM1 port ---- */
-  printf("Welcome to STM32 world !\r\n");
+  printf("Welcome to STM32 world !\n\r");
   /* -- Sample board code to switch on leds ---- */
-  //BSP_LED_On(LED_GREEN);
+  BSP_LED_On(LED_GREEN);
   BSP_LED_On(LED_YELLOW);
   BSP_LED_On(LED_RED);
-  Timer_Start();
-  PWM_Start();
   /* USER CODE END BSP */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //Loop();
+	if (BspButtonState == BUTTON_PRESSED)
+	{
+		if(DriverState == DriverOn){
+			DriverStop(-1);
+		}
+		else if(DriverState == DriverOff){
+			DriverStart(-1);
+		}
+	  BspButtonState = BUTTON_RELEASED;
+	}
 
-    /* -- Sample board code for User push-button in interrupt mode ---- */
-    if (BspButtonState == BUTTON_PRESSED)
-    {
-    	ADC_Start();
-      /* Update button state */
-      BspButtonState = BUTTON_RELEASED;
-      /* -- Sample board code to toggle leds ---- */
-      //BSP_LED_Toggle(LED_GREEN);
-      BSP_LED_Toggle(LED_YELLOW);
-      //BSP_LED_Toggle(LED_RED);
-
-      /* ..... Perform your action ..... */
-      Counter++;
-      if(Counter%2){
-    	  PWM_Start();
-    	  //TIM1->BDTR |= TIM_BDTR_MOE;
-    	  //Timer_Start();
-      }
-      else{
-    	  PWM_Stop();
-    	  //TIM1->BDTR &= ~TIM_BDTR_MOE;
-    	  //Timer_Stop();
-      }
-    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -279,51 +269,6 @@ static void MX_NVIC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-//void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim){
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	//if(htim->Instance == TIM1){
-		//BSP_LED_Toggle(LED_GREEN);
-		if(Counter == 0){
-			if(pwmState){
-//			    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_11;
-//			    GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-//			    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-//			    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-//			    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-//			    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-//
-//			    GPIO_InitStruct.Pin = GPIO_PIN_8;
-//			    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-			    //PWM_Stop();
-				TIM1->BDTR &= ~TIM_BDTR_AOE;
-				TIM1->BDTR &= ~TIM_BDTR_MOE;
-				pwmState = false;
-				Counter = 2;
-			}
-			else{
-//			    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_11;
-//			    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//			    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-//			    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-//			    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-//			    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-//
-//			    GPIO_InitStruct.Pin = GPIO_PIN_8;
-//			    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//			    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-//			    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-//			    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-//			    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-				//PWM_Start();
-				TIM1->BDTR |= TIM_BDTR_AOE;
-				pwmState = true;
-				Counter = 2;
-
-			}
-		}
-		Counter--;
-	}
-//}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
   if (hadc->Instance == ADC1) {

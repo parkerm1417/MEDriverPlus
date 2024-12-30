@@ -36,7 +36,6 @@
      PC1   ------> ETH_MDC
      PA1   ------> ETH_REF_CLK
      PA2   ------> ETH_MDIO
-     PA4   ------> COMP_DAC11_group
      PA7   ------> ETH_CRS_DV
      PC4   ------> ETH_RXD0
      PC5   ------> ETH_RXD1
@@ -74,12 +73,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PA4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4;
-  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PB13 */
