@@ -80,7 +80,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			if(UplinkWhenOff){
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 				ADC_Start();
-				return;
 			}
 			return;
 		}
