@@ -3,6 +3,7 @@
 enum DriverStates DriverState = DriverOff;
 bool UplinkWhenOff = false;
 uint8_t MessageName = 0;
+bool NewMessage = false;
 uint8_t CurrentMessageIndex = 0;
 
 void Setup_BitCtrl(void){
@@ -51,10 +52,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(DriverIndefinite){return;}
 
 	if(CyclesRemaining == 0){
-		CurrentMessageIndex++;
-		if(CurrentMessageIndex == Messages[MessageName].Length){
+		if(!NewMessage){
+			CurrentMessageIndex++;
+		}
+		NewMessage = false;
+		if(CurrentMessageIndex == (Messages[MessageName].Length * 2)){
 			CurrentMessageIndex = 0;
-			DriverStart(-1);
+			DriverStop(-1);
+			return;
 		}
 		if(DriverState == DriverOn){
 			DriverStop(Messages[MessageName].Cycles[CurrentMessageIndex]);

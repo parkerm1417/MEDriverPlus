@@ -16,6 +16,7 @@ enum DriverStates{
 extern enum DriverStates DriverState;
 extern bool UplinkWhenOff;
 extern uint8_t MessageName;
+extern bool NewMessage;
 
 void Setup_BitCtrl(void);
 

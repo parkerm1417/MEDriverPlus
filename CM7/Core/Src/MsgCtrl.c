@@ -5,7 +5,7 @@ struct Message Messages[NumberOfMessages];
 struct Message Test_ = {
 		.Direction = Downlink,
 		.Length = 4,
-		.Data = 0b1010
+		.Data = 0b0101
 };
 
 void Setup_MsgCtrl(void){
@@ -13,14 +13,14 @@ void Setup_MsgCtrl(void){
 
 	for(int i=0; i<NumberOfMessages; i++){
 		if(Messages[i].Direction == Downlink){
-			for(int j=Messages[i].Length - 1; j>=0; j--){
+			for(int j=0; j<Messages[i].Length; j++){
 				if((Messages[i].Data >> j) & 1){
-					Messages[i].Cycles[Messages[i].Length - j - 1] = DOWNLINK_1_OFF_CYCLES;
-					Messages[i].Cycles[Messages[i].Length - j] = DOWNLINK_1_ON_CYCLES;
+					Messages[i].Cycles[(Messages[i].Length - j)*2 - 2] = DOWNLINK_1_OFF_CYCLES;
+					Messages[i].Cycles[(Messages[i].Length - j)*2 - 1] = DOWNLINK_1_ON_CYCLES;
 				}
 				else{
-					Messages[i].Cycles[Messages[i].Length - j - 1] = DOWNLINK_0_OFF_CYCLES;
-					Messages[i].Cycles[Messages[i].Length - j] = DOWNLINK_0_ON_CYCLES;
+					Messages[i].Cycles[(Messages[i].Length - j)*2 - 2] = DOWNLINK_0_OFF_CYCLES;
+					Messages[i].Cycles[(Messages[i].Length - j)*2 - 1] = DOWNLINK_0_ON_CYCLES;
 				}
 			}
 		}
@@ -35,6 +35,7 @@ void Setup_MsgCtrl(void){
 
 void SendMessage(uint8_t _Message){
 	MessageName = _Message;
+	NewMessage = true;
 	CyclesRemaining = 0;
 	DriverIndefinite = false;
 

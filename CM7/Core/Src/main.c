@@ -135,7 +135,7 @@ Error_Handler();
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  //Setup();
+  Setup();
   PWM_Start();
   DriverStop(-1);
   /* USER CODE END 2 */
@@ -172,18 +172,7 @@ Error_Handler();
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //Loop();
-	if (BspButtonState == BUTTON_PRESSED)
-	{
-		if(DriverState == DriverOn){
-			DriverStop(-1);
-		}
-		else if(DriverState == DriverOff){
-			DriverStart(-1);
-		}
-	  BspButtonState = BUTTON_RELEASED;
-	}
-
+	  Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
