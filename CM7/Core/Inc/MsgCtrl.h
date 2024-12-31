@@ -16,8 +16,8 @@ enum MessageDirection{
 };
 
 struct Message{
-	uint32_t Direction;
-	uint32_t Length;
+	uint32_t DownLength;
+	uint32_t UpLength;
 	uint32_t Data;
 	uint32_t Cycles[64];
 };

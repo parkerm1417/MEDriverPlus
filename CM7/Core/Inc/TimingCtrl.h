@@ -13,8 +13,8 @@
 #define DOWNLINK_1_ON_TIME 100
 #define DOWNLINK_1_OFF_TIME 150
 
-#define UPLINK_ON_TIME 100
-#define UPLINK_OFF_TIME 100
+#define UPLINK_ON_TIME 50
+#define UPLINK_OFF_TIME 50
 
 #define DRIVER_PERIOD (1000000/ADJUSTED_DRIVER_FREQ)
 #define DOWNLINK_0_ON_CYCLES (DOWNLINK_0_ON_TIME/(DRIVER_PERIOD))
@@ -26,8 +26,6 @@
 #define UPLINK_ON_CYCLES (UPLINK_ON_TIME/(DRIVER_PERIOD))
 #define UPLINK_OFF_CYCLES ((UPLINK_OFF_TIME/(DRIVER_PERIOD))-UPLINK_PREP_CYCLES)
 
-extern uint32_t OnCycles;
-extern uint32_t OffCycles;
 extern uint32_t CyclesRemaining;
 extern bool DriverIndefinite;
 
