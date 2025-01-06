@@ -15,6 +15,7 @@ void DriverStart(int32_t _Cycles){
 	BSP_LED_On(LED_GREEN);
 	TIM1->BDTR |= TIM_BDTR_AOE;
 	DriverState = DriverOn;
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 
 	if(_Cycles == 0){return;}
 
@@ -26,7 +27,7 @@ void DriverStart(int32_t _Cycles){
 		DriverIndefinite = false;
 	}
 
-	OnCycles = _Cycles;
+	CyclesRemaining = _Cycles;
 }
 
 void DriverStop(int32_t _Cycles){
@@ -34,6 +35,7 @@ void DriverStop(int32_t _Cycles){
 	TIM1->BDTR &= ~TIM_BDTR_AOE;
 	TIM1->BDTR &= ~TIM_BDTR_MOE;
 	DriverState = DriverOff;
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	if(_Cycles == 0){return;}
 
@@ -45,7 +47,7 @@ void DriverStop(int32_t _Cycles){
 		DriverIndefinite = false;
 	}
 
-	OffCycles = _Cycles;
+	CyclesRemaining = _Cycles;
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
@@ -56,31 +58,36 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			CurrentMessageIndex++;
 		}
 		NewMessage = false;
-		if(CurrentMessageIndex == (Messages[MessageName].Length * 2)){
+		if(CurrentMessageIndex == Messages[MessageName].SwitchIndex){
+			if(Messages[MessageName].UpLength == 0){
+				CurrentMessageIndex = 0;
+				UplinkWhenOff = false;
+				DriverStop(-1);
+				return;
+			}
+			else{
+				UplinkWhenOff = true;
+				DriverStart(Messages[MessageName].Cycles[CurrentMessageIndex]);
+				return;
+			}
+		}
+		if(CurrentMessageIndex == (Messages[MessageName].SwitchIndex + (Messages[MessageName].UpLength * 2))){
 			CurrentMessageIndex = 0;
+			UplinkWhenOff = false;
 			DriverStop(-1);
 			return;
 		}
-		if(DriverState == DriverOn){
+		if(Messages[MessageName].OnOff[CurrentMessageIndex] == 0){
 			DriverStop(Messages[MessageName].Cycles[CurrentMessageIndex]);
 			if(UplinkWhenOff){
-				DriverState = PrepForUplink;
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
-				CyclesRemaining = UPLINK_PREP_CYCLES;
-				return;
+				ADC_Start();
 			}
-			CyclesRemaining = OffCycles;
 			return;
 		}
-		else if(DriverState == DriverOff){
+		else{
 			DriverStart(Messages[MessageName].Cycles[CurrentMessageIndex]);
-			CyclesRemaining = OnCycles;
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 			return;
-		}
-		else if(DriverState == PrepForUplink){
-			ADC_Start();
-			CyclesRemaining = OffCycles - UPLINK_PREP_CYCLES;
-			DriverState = DriverOff;
 		}
 	}
 	CyclesRemaining--;

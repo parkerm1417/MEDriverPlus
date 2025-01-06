@@ -10,16 +10,13 @@ enum MessageList{
 	NumberOfMessages
 };
 
-enum MessageDirection{
-	Downlink,
-	Uplink
-};
-
 struct Message{
-	uint32_t Direction;
-	uint32_t Length;
+	uint32_t DownLength;
+	uint32_t UpLength;
 	uint32_t Data;
 	uint32_t Cycles[64];
+	bool OnOff[64];
+	uint32_t SwitchIndex;
 };
 
 extern struct Message Messages[NumberOfMessages];

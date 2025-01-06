@@ -91,7 +91,7 @@ void MX_ADC1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC1_Init 2 */
-
+  __HAL_ADC_ENABLE_IT(&hadc1, ADC_IT_EOC);
   /* USER CODE END ADC1_Init 2 */
 
 }

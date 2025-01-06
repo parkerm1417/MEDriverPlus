@@ -4,6 +4,7 @@ void Setup(void){
 	Setup_BitCtrl();
 	Setup_MsgCtrl();
 	DAC_Start(2048);
+	printf("Setup Complete\r\n");
 }
 
 void Loop(void){
