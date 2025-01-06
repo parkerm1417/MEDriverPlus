@@ -59,6 +59,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define DAMP_EN_Pin GPIO_PIN_9
+#define DAMP_EN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

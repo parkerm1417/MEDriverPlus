@@ -15,6 +15,7 @@ void DriverStart(int32_t _Cycles){
 	BSP_LED_On(LED_GREEN);
 	TIM1->BDTR |= TIM_BDTR_AOE;
 	DriverState = DriverOn;
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 
 	if(_Cycles == 0){return;}
 
@@ -34,6 +35,7 @@ void DriverStop(int32_t _Cycles){
 	TIM1->BDTR &= ~TIM_BDTR_AOE;
 	TIM1->BDTR &= ~TIM_BDTR_MOE;
 	DriverState = DriverOff;
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	if(_Cycles == 0){return;}
 
@@ -56,7 +58,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			CurrentMessageIndex++;
 		}
 		NewMessage = false;
-		if(CurrentMessageIndex == (Messages[MessageName].DownLength * 2)){
+		if(CurrentMessageIndex == Messages[MessageName].SwitchIndex){
 			if(Messages[MessageName].UpLength == 0){
 				CurrentMessageIndex = 0;
 				UplinkWhenOff = false;
@@ -69,22 +71,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				return;
 			}
 		}
-		if(CurrentMessageIndex == ((Messages[MessageName].DownLength + Messages[MessageName].UpLength) * 2 + 1)){
+		if(CurrentMessageIndex == (Messages[MessageName].SwitchIndex + (Messages[MessageName].UpLength * 2))){
 			CurrentMessageIndex = 0;
 			UplinkWhenOff = false;
 			DriverStop(-1);
 			return;
 		}
-		if(DriverState == DriverOn){
+		if(Messages[MessageName].OnOff[CurrentMessageIndex] == 0){
 			DriverStop(Messages[MessageName].Cycles[CurrentMessageIndex]);
 			if(UplinkWhenOff){
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 				ADC_Start();
 			}
 			return;
 		}
-		else if(DriverState == DriverOff){
+		else{
 			DriverStart(Messages[MessageName].Cycles[CurrentMessageIndex]);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 			return;
 		}
 	}
